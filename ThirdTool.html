@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <title>Vue + Swiper</title>
+    <style>
+      html,
+      body {
+        position: relative;
+        height: 100%;
+      }
+
+      body {
+        background: #eee;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: #000;
+        margin: 0;
+        padding: 0;
+      }
+
+      .swiper {
+        width: 100%;
+        height: 100%;
+      }
+
+      .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .swiper-slide img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      body {
+        background: #000;
+        color: #000;
+      }
+
+      .swiper {
+        width: 100%;
+        height: 300px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .swiper-slide {
+        background-size: cover;
+        background-position: center;
+      }
+
+      .mySwiper2 {
+        height: 80%;
+        width: 100%;
+      }
+
+      .mySwiper {
+        height: 20%;
+        box-sizing: border-box;
+        padding: 10px 0;
+      }
+
+      .mySwiper .swiper-slide {
+        width: 25%;
+        height: 100%;
+        opacity: 0.4;
+      }
+
+      .mySwiper .swiper-slide-thumb-active {
+        opacity: 1;
+      }
+
+      .swiper-slide img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      #app {
+        width: 600px;
+        height: 450px;
+      }
+
+ 
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+        <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiper2">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide" v-for="item in imgArr" :key="item.url">
+                <img :src="item.url" />
+              </div>
+              
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+          </div>
+           
+          <!--好的-->
+          <!-- <div thumbsSlider="" class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                  <img src="https://picsum.photos/500/300?random=1" />
+                </div>
+                <div class="swiper-slide">
+                  <img src="https://picsum.photos/500/300?random=2" />
+                </div>
+                <div class="swiper-slide">
+                  <img src="https://picsum.photos/500/300?random=3" />
+                </div>
+                <div class="swiper-slide">
+                  <img src="https://picsum.photos/500/300?random=4" />
+                </div>
+                <div class="swiper-slide">
+                  <img src="https://picsum.photos/500/300?random=5" />
+                </div>
+                <div class="swiper-slide">
+                  <img src="https://picsum.photos/500/300?random=6" />
+                </div>
+                <div class="swiper-slide">
+                  <img src="https://picsum.photos/500/300?random=7" />
+                </div>
+                
+
+          </div>
+        </div> -->
+          
+        <!--壞掉的-->
+          <div thumbsSlider="" class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="item in imgArr" :key="item.url">
+                  <img :src="item.url" />
+                </div>
+          </div>
+        </div>
+     
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+      const { onMounted, ref, watch,nextTick} = Vue;
+      console.log(Vue);
+      const App = {
+        setup() {
+          const imgArr = ref([]);
+            let swiper = null;
+            let swiper2 = null;
+          watch(imgArr, (newVal)=>{
+              console.log(swiper2)
+              swiper.update();
+              swiper2.update();
+          })
+
+          onMounted(() => {
+            axios
+              .get("https://vue-lessons-api.vercel.app/photo/list")
+              .then((res) => {
+                imgArr.value = res.data;
+                console.log(imgArr.value);
+              });
+              
+              swiper = new Swiper(".mySwiper", {
+              loop: true,
+              spaceBetween: 10,
+              slidesPerView: 4,
+              freeMode: true,
+              watchSlidesProgress: true,
+            });
+          
+            swiper2 = new Swiper(".mySwiper2", {
+              loop: true,
+              observer: true,
+              centeredSlides: true,
+              spaceBetween: 10,
+              navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+              },
+              autoplay: {
+                delay: 2500,
+                disableOnInteraction: false,
+              },
+              thumbs: {
+                swiper: swiper,
+              },
+            });
+              })
+           
+           
+          
+          
+          return {
+            imgArr,
+          };
+        },
+      };
+      Vue.createApp(App).mount("#app");
+    </script>
+  </body>
+</html>
