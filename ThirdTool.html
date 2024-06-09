@@ -94,96 +94,54 @@
         width: 600px;
         height: 450px;
       }
-
- 
     </style>
   </head>
 
   <body>
     <div id="app">
-        <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiper2">
-            <div class="swiper-wrapper">
-              <div class="swiper-slide" v-for="item in imgArr" :key="item.url">
-                <img :src="item.url" />
-              </div>
-              
-            </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-          </div>
-           
-          <!--好的-->
-          <!-- <div thumbsSlider="" class="swiper mySwiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                  <img src="https://picsum.photos/500/300?random=1" />
-                </div>
-                <div class="swiper-slide">
-                  <img src="https://picsum.photos/500/300?random=2" />
-                </div>
-                <div class="swiper-slide">
-                  <img src="https://picsum.photos/500/300?random=3" />
-                </div>
-                <div class="swiper-slide">
-                  <img src="https://picsum.photos/500/300?random=4" />
-                </div>
-                <div class="swiper-slide">
-                  <img src="https://picsum.photos/500/300?random=5" />
-                </div>
-                <div class="swiper-slide">
-                  <img src="https://picsum.photos/500/300?random=6" />
-                </div>
-                <div class="swiper-slide">
-                  <img src="https://picsum.photos/500/300?random=7" />
-                </div>
-                
-
-          </div>
-        </div> -->
-          
-        <!--壞掉的-->
-          <div thumbsSlider="" class="swiper mySwiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide" v-for="item in imgArr" :key="item.url">
-                  <img :src="item.url" />
-                </div>
+      <div
+        style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff"
+        class="swiper mySwiper2"
+      >
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" v-for="item in imgArr" :key="item.url">
+            <img :src="item.url" />
           </div>
         </div>
-     
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+      </div>
+      <div thumbsSlider="" class="swiper mySwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" v-for="item in imgArr" :key="item.url">
+            <img :src="item.url" />
+          </div>
+        </div>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-      const { onMounted, ref, watch,nextTick} = Vue;
+      const { onMounted, ref, watch, nextTick } = Vue;
       console.log(Vue);
       const App = {
         setup() {
           const imgArr = ref([]);
-            let swiper = null;
-            let swiper2 = null;
-          watch(imgArr, (newVal)=>{
-              console.log(swiper2)
-              swiper.update();
-              swiper2.update();
-          })
-
-          onMounted(() => {
-            axios
-              .get("https://vue-lessons-api.vercel.app/photo/list")
-              .then((res) => {
-                imgArr.value = res.data;
-                console.log(imgArr.value);
-              });
-              
-              swiper = new Swiper(".mySwiper", {
+          onMounted(
+            async () => {
+            const res = await axios.get(
+              "https://vue-lessons-api.vercel.app/photo/list"
+            );
+            imgArr.value = res.data;
+            await nextTick();
+            swiper = new Swiper(".mySwiper", {
               loop: true,
               spaceBetween: 10,
               slidesPerView: 4,
               freeMode: true,
               watchSlidesProgress: true,
             });
-          
             swiper2 = new Swiper(".mySwiper2", {
               loop: true,
               observer: true,
@@ -201,11 +159,7 @@
                 swiper: swiper,
               },
             });
-              })
-           
-           
-          
-          
+          });
           return {
             imgArr,
           };
